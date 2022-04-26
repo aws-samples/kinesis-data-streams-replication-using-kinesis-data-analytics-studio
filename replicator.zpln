@@ -1,0 +1,403 @@
+﻿{
+  "paragraphs": [
+    {
+      "text": "%md\n### Replication of data from a Kinesis Data Stream in `us-east-1` to another Kinesis Data Stream in `us-west-1`\nIf you are attempting to apply this to your workloads, please ensure you make the following modifications:\n- Modify the schema specified in both tables to match your incoming data\n- Change the `stream` name in both tables to match both your source stream and destination stream\n- Ensure that your Kinesis Data Analytics application is running in the *same* region as your **source** stream to minimize latency and disruptions when replicating.\n\n\nPlease note that this replication process does not factor in any other **necessary** replication considerations such as failover detection, client failover and offset synchronization between clients. ",
+      "user": "anonymous",
+      "dateUpdated": "2022-04-08T16:00:29+0000",
+      "progress": 0,
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9,
+        "editorHide": true,
+        "results": {},
+        "enabled": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<h3>Replication of data from a Kinesis Data Stream in <code>us-east-1</code> to another Kinesis Data Stream in <code>us-west-1</code></h3>\n<p>If you are attempting to apply this to your workloads, please ensure you make the following modifications:</p>\n<ul>\n<li>Modify the schema specified in both tables to match your incoming data</li>\n<li>Change the <code>stream</code> name in both tables to match both your source stream and destination stream</li>\n<li>Ensure that your Kinesis Data Analytics application is running in the <em>same</em> region as your <strong>source</strong> stream to minimize latency and disruptions when replicating.</li>\n</ul>\n<p>Please note that this replication process does not factor in any other <strong>necessary</strong> replication considerations such as failover detection, client failover and offset synchronization between clients.</p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1649427878579_1935754972",
+      "id": "paragraph_1649427878579_1935754972",
+      "dateCreated": "2022-04-08T14:24:38+0000",
+      "dateStarted": "2022-04-08T16:00:25+0000",
+      "dateFinished": "2022-04-08T16:00:25+0000",
+      "status": "FINISHED",
+      "focus": true,
+      "$$hashKey": "object:259"
+    },
+    {
+      "text": "%flink.ssql(type=update)\n\nDROP TABLE IF EXISTS my_source_stream;\nCREATE TABLE my_source_stream (\n    data STRING\n)\nWITH (\n  'connector' = 'kinesis',\n  'stream' = 'us-east-1-stream',\n  'aws.region' = 'us-east-1',\n  'scan.stream.initpos' = 'LATEST',\n  'format' = 'raw'\n); ",
+      "user": "anonymous",
+      "dateUpdated": "2022-04-14T20:57:43+0000",
+      "progress": 0,
+      "config": {
+        "colWidth": 12,
+        "fontSize": 9,
+        "enabled": true,
+        "results": {},
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "editorMode": "ace/mode/sql",
+        "type": "update"
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Table has been dropped.\nTable has been created.\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_example_create",
+      "id": "paragraph_example_create",
+      "dateCreated": "2022-04-05T14:20:05+0000",
+      "dateStarted": "2022-04-14T20:57:43+0000",
+      "dateFinished": "2022-04-14T20:57:44+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:260"
+    },
+    {
+      "text": "%flink.ssql(type=update)\nDROP TABLE IF EXISTS my_sink_stream;\n\nCREATE TABLE my_sink_stream (\n    data STRING\n)\nWITH (\n  'connector' = 'kinesis',\n  'stream' = 'us-west-1-stream',\n  'aws.region' = 'us-west-1',\n  'format' = 'raw',\n  'scan.stream.initpos' = 'TRIM_HORIZON'\n); ",
+      "user": "anonymous",
+      "dateUpdated": "2022-04-14T20:57:51+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "TEXT",
+            "data": "Table has been dropped.\nTable has been created.\n"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1649183716181_39139182",
+      "id": "paragraph_1649183716181_39139182",
+      "dateCreated": "2022-04-05T18:35:16+0000",
+      "dateStarted": "2022-04-14T20:57:51+0000",
+      "dateFinished": "2022-04-14T20:57:54+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:261"
+    },
+    {
+      "text": "%md\n### Run the insert statement which will trigger the Apache Flink job to execute. \nThis paragraph will take data from `my_source_stream` (us-east-1) and write it into the secondary stream `my_sink_stream` (us-west-1)\n",
+      "user": "anonymous",
+      "dateUpdated": "2022-04-08T15:59:52+0000",
+      "progress": 0,
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9,
+        "editorHide": true,
+        "title": false,
+        "results": {},
+        "enabled": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<h3>Run the insert statement which will trigger the Apache Flink job to execute.</h3>\n<p>This paragraph will take data from <code>my_source_stream</code> (us-east-1) and write it into the secondary stream <code>my_sink_stream</code> (us-west-1)</p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1649433345714_232283354",
+      "id": "paragraph_1649433345714_232283354",
+      "dateCreated": "2022-04-08T15:55:45+0000",
+      "dateStarted": "2022-04-08T15:58:56+0000",
+      "dateFinished": "2022-04-08T15:58:56+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:262"
+    },
+    {
+      "text": "%flink.ssql(type=update)\nINSERT INTO my_sink_stream select * from my_source_stream;",
+      "user": "anonymous",
+      "dateUpdated": "2022-04-14T20:57:55+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9,
+        "results": {},
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1649187383831_73237547",
+      "id": "paragraph_1649187383831_73237547",
+      "dateCreated": "2022-04-05T19:36:23+0000",
+      "dateStarted": "2022-04-14T20:57:56+0000",
+      "dateFinished": "2022-04-14T21:03:27+0000",
+      "status": "ABORT",
+      "$$hashKey": "object:263"
+    },
+    {
+      "text": "%md\n#### We can validate that all of our records have made it to the sink stream by reading from the beginning of the sink and counting all the records that have arrived thus far.\nDelete the below paragraph ahead of deploying this notebook as a fully-fledged Apache Flink application on Kinesis Data Analytics for Apache Flink.",
+      "user": "anonymous",
+      "dateUpdated": "2022-04-08T19:14:59+0000",
+      "progress": 0,
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9,
+        "editorHide": true,
+        "results": {},
+        "enabled": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<h4>We can validate that all of our records have made it to the sink stream by reading from the beginning of the sink and counting all the records that have arrived thus far.</h4>\n<p>Delete the below paragraph ahead of deploying this notebook as a fully-fledged Apache Flink application on Kinesis Data Analytics for Apache Flink.</p>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1649433634131_1577088569",
+      "id": "paragraph_1649433634131_1577088569",
+      "dateCreated": "2022-04-08T16:00:34+0000",
+      "dateStarted": "2022-04-08T19:14:55+0000",
+      "dateFinished": "2022-04-08T19:14:55+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:264"
+    },
+    {
+      "text": "%flink.ssql(type=update)\nSELECT COUNT(*) AS record_count FROM my_sink_stream",
+      "user": "anonymous",
+      "dateUpdated": "2022-04-14T20:58:02+0000",
+      "progress": 0,
+      "config": {
+        "editorSetting": {
+          "language": "sql",
+          "editOnDblClick": false,
+          "completionKey": "TAB",
+          "completionSupport": true
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/sql",
+        "fontSize": 9,
+        "results": {
+          "0": {
+            "graph": {
+              "mode": "table",
+              "height": 300,
+              "optionOpen": false,
+              "setting": {
+                "table": {
+                  "tableGridState": {},
+                  "tableColumnTypeState": {
+                    "names": {
+                      "record_count": "string"
+                    },
+                    "updated": false
+                  },
+                  "tableOptionSpecHash": "[{\"name\":\"useFilter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable filter for columns\"},{\"name\":\"showPagination\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable pagination for better navigation\"},{\"name\":\"showAggregationFooter\",\"valueType\":\"boolean\",\"defaultValue\":false,\"widget\":\"checkbox\",\"description\":\"Enable a footer for displaying aggregated values\"}]",
+                  "tableOptionValue": {
+                    "useFilter": false,
+                    "showPagination": false,
+                    "showAggregationFooter": false
+                  },
+                  "updated": false,
+                  "initialized": false
+                },
+                "multiBarChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "lineChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                },
+                "stackedAreaChart": {
+                  "rotate": {
+                    "degree": "-45"
+                  },
+                  "xLabelStatus": "default"
+                }
+              },
+              "commonSetting": {},
+              "keys": [],
+              "groups": [],
+              "values": [
+                {
+                  "name": "record_count",
+                  "index": 0,
+                  "aggr": "sum"
+                }
+              ]
+            },
+            "helium": {}
+          }
+        },
+        "enabled": true
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1649187971990_1788932196",
+      "id": "paragraph_1649187971990_1788932196",
+      "dateCreated": "2022-04-05T19:46:11+0000",
+      "dateStarted": "2022-04-14T20:58:02+0000",
+      "dateFinished": "2022-04-14T21:00:03+0000",
+      "status": "ABORT",
+      "$$hashKey": "object:265"
+    },
+    {
+      "text": "%md \n### Please ensure you stop all paragraphs OR stop the Flink application in the AWS Management Console once replication is no longer needed to free up resources.",
+      "user": "anonymous",
+      "dateUpdated": "2022-04-08T19:08:24+0000",
+      "progress": 0,
+      "config": {
+        "tableHide": false,
+        "editorSetting": {
+          "language": "markdown",
+          "editOnDblClick": true,
+          "completionKey": "TAB",
+          "completionSupport": false
+        },
+        "colWidth": 12,
+        "editorMode": "ace/mode/markdown",
+        "fontSize": 9,
+        "editorHide": true,
+        "results": {},
+        "enabled": false
+      },
+      "settings": {
+        "params": {},
+        "forms": {}
+      },
+      "results": {
+        "code": "SUCCESS",
+        "msg": [
+          {
+            "type": "HTML",
+            "data": "<div class=\"markdown-body\">\n<h3>Please ensure you stop all paragraphs OR stop the Flink application in the AWS Management Console once replication is no longer needed to free up resources.</h3>\n\n</div>"
+          }
+        ]
+      },
+      "apps": [],
+      "runtimeInfos": {},
+      "progressUpdateIntervalMs": 500,
+      "jobName": "paragraph_1649433751487_209882478",
+      "id": "paragraph_1649433751487_209882478",
+      "dateCreated": "2022-04-08T16:02:31+0000",
+      "dateStarted": "2022-04-08T19:08:14+0000",
+      "dateFinished": "2022-04-08T19:08:14+0000",
+      "status": "FINISHED",
+      "$$hashKey": "object:266"
+    }
+  ],
+  "name": "replicator",
+  "id": "S01EDQA2V",
+  "defaultInterpreterGroup": "flink",
+  "version": "0.9.0-rc1-kda1",
+  "noteParams": {},
+  "noteForms": {},
+  "angularObjects": {},
+  "config": {
+    "isZeppelinNotebookCronEnable": false,
+    "looknfeel": "default",
+    "personalizedMode": "false"
+  },
+  "info": {},
+  "path": "/replicator"
+}
